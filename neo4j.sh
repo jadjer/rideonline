@@ -3,9 +3,6 @@
 DATA_FOLDER=$HOME/neo4j/data
 LOGS_FOLDER=$HOME/neo4j/logs
 
-echo $DATA_FOLDER
-echo $LOGS_FOLDER
-
 if [[ ! -d $DATA_FOLDER ]]
 then
     mkdir -p $DATA_FOLDER
