@@ -16,10 +16,25 @@ services:
     volumes:
       - $HOME/keys:/app/keys:ro
     environment:
-      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_HOST=localhost
       - DATABASE_PORT=7687
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - PUBLIC_KEY_PATH=/app/keys/public_key.pem
       - PRIVATE_KEY_PATH=/app/keys/private_key.pem
       - SMS_SERVICE=http://rideonline_sms:8000/api/v1
+
+  event:
+    image: ghcr.io/jadjer/rideonline_event:latest
+    container_name: rideonline_event
+    depends_on: auth
+    ports:
+      - "9000:8000"
+    volumes:
+      - $HOME/keys:/app/keys:ro
+    environment:
+      - DATABASE_HOST=localhost
+      - DATABASE_PORT=7687
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - PUBLIC_KEY_PATH=/app/keys/public_key.pem
