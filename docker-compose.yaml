@@ -1,40 +1,87 @@
 version: "3"
 
+volumes:
+  neo4j_data:
+  keys_data:
+
+networks:
+  inside:
+  outside:
 
 services:
+  neo4j:
+    image: neo4j:latest
+    restart: always
+    container_name: rideonine_neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data:rw
+    environment:
+      - NEO4J_AUTH=${DATABASE_USER}/${DATABASE_PASS}
+    networks:
+      - inside
+    
   sms:
     image: ghcr.io/jadjer/rideonline_sms:latest
+    restart: always
     container_name: rideonline_sms
+    networks:
+      - inside
+
+  keys:
+    image: ghcr.io/jadjer/rideonline_keys:latest
+    restart: always
+    container_name: rideonline_keys
+    volumes:
+      - keys_data:/keys
+    networks:
+      - inside
 
   auth:
     image: ghcr.io/jadjer/rideonline_auth:latest
-    container_name: rideonline_auth
+    restart: always
     depends_on:
+      - neo4j
       - sms
-    ports:
-      - "8000:8000"
+      - keys
     volumes:
-      - $HOME/keys:/app/keys:ro
+      - keys_data:/app/keys:ro
     environment:
-      - DATABASE_HOST=localhost
+      - DATABASE_HOST=rideonine_neo4j
       - DATABASE_PORT=7687
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - PUBLIC_KEY_PATH=/app/keys/public_key.pem
       - PRIVATE_KEY_PATH=/app/keys/private_key.pem
       - SMS_SERVICE=http://rideonline_sms:8000/api/v1
+      - VIRTUAL_HOST=auth.rideonline.jadjer.by
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=auth.rideonline.jadjer.by
+    networks:
+      - inside
+      - outside
 
   event:
     image: ghcr.io/jadjer/rideonline_event:latest
-    container_name: rideonline_event
-    depends_on: auth
-    ports:
-      - "9000:8000"
+    restart: always
+    depends_on:
+      - neo4j
+      - auth
+      - keys
     volumes:
-      - $HOME/keys:/app/keys:ro
+      - keys_data:/app/keys:ro
     environment:
-      - DATABASE_HOST=localhost
+      - DATABASE_HOST=rideonine_neo4j
       - DATABASE_PORT=7687
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - PUBLIC_KEY_PATH=/app/keys/public_key.pem
+      - VIRTUAL_HOST=event.rideonline.jadjer.by
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=event.rideonline.jadjer.by
+    networks:
+      - inside
+      - outside
+    
