@@ -2,6 +2,8 @@
 
 
 Get sources
+---
+
 ```bash
 git clone git@github.com:jadjer/rideonline.git
 ```
@@ -9,12 +11,11 @@ git clone git@github.com:jadjer/rideonline.git
 cd rideonline
 ```
 
-Install neo4j
+Rideonline's services deploy
+---
+
 ```bash
-chmod +x neo4j.sh
-```
-```bash
-neo4j.sh
+cd rideonline
 ```
 
 Create envirovment file
@@ -29,12 +30,23 @@ echo "DATABASE_PASS=password" >> .env
 ```
 
 Launch services
-Use docker:
 ```bash
 docker-compose up -d
 ```
 
-Use podman:
+Nginx's proxy services deploy
+---
+
 ```bash
-podman-compose --env-file .env up -d
+cd ../nginx-proxy
+```
+
+Launch services
+```bash
+docker-compose up -d
+```
+
+Connect to network
+```bash
+docker network connect rideonline_outside nginx-proxy
 ```
