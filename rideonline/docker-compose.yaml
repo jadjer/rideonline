@@ -2,6 +2,7 @@ version: "3"
 
 volumes:
   neo4j_data:
+  neo4j_logs:
   keys_data:
 
 networks:
@@ -17,7 +18,8 @@ services:
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - neo4j_data:/data:rw
+      - neo4j_data:/data
+      - neo4j_logs:/logs
     environment:
       - NEO4J_AUTH=${DATABASE_USER}/${DATABASE_PASS}
     networks:
