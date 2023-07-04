@@ -65,8 +65,8 @@ services:
       - inside
       - outside
 
-  event:
-    image: ghcr.io/jadjer/rideonline_event:latest
+  events:
+    image: ghcr.io/jadjer/rideonline_events:latest
     restart: always
     depends_on:
       - neo4j
@@ -80,9 +80,9 @@ services:
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - PUBLIC_KEY_PATH=/app/keys/public_key.pem
-      - VIRTUAL_HOST=event.rideonline.jadjer.by
+      - VIRTUAL_HOST=events.rideonline.jadjer.by
       - VIRTUAL_PORT=8000
-      - LETSENCRYPT_HOST=event.rideonline.jadjer.by
+      - LETSENCRYPT_HOST=events.rideonline.jadjer.by
     networks:
       - inside
       - outside
