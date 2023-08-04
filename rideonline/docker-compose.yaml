@@ -86,4 +86,26 @@ services:
     networks:
       - inside
       - outside
+
+  together:
+    image: ghcr.io/jadjer/rideonline_together:latest
+    restart: always
+    depends_on:
+      - neo4j
+      - auth
+      - keys
+    volumes:
+      - keys_data:/app/keys:ro
+    environment:
+      - DATABASE_HOST=rideonine_neo4j
+      - DATABASE_PORT=7687
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASS=${DATABASE_PASS}
+      - PUBLIC_KEY_PATH=/app/keys/public_key.pem
+      - VIRTUAL_HOST=together.rideonline.jadjer.by
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=together.rideonline.jadjer.by
+    networks:
+      - inside
+      - outside
     
