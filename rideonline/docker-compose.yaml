@@ -13,10 +13,9 @@ services:
   neo4j:
     image: neo4j:latest
     restart: always
-    container_name: rideonine_neo4j
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - 7474:7474
+      - 7687:7687
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
@@ -28,14 +27,12 @@ services:
   sms:
     image: ghcr.io/jadjer/rideonline_sms:latest
     restart: always
-    container_name: rideonline_sms
     networks:
       - inside
 
   keys:
     image: ghcr.io/jadjer/rideonline_keys:latest
     restart: always
-    container_name: rideonline_keys
     volumes:
       - keys_data:/keys
     networks:
@@ -51,13 +48,13 @@ services:
     volumes:
       - keys_data:/app/keys:ro
     environment:
-      - DATABASE_HOST=rideonine_neo4j
+      - DATABASE_HOST=neo4j
       - DATABASE_PORT=7687
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
       - PUBLIC_KEY_PATH=/app/keys/public_key.pem
       - PRIVATE_KEY_PATH=/app/keys/private_key.pem
-      - SMS_SERVICE=http://rideonline_sms:8000/api/v1
+      - SMS_SERVICE=http://sms:8000/api/v1
       - VIRTUAL_HOST=auth.rideonline.jadjer.by
       - VIRTUAL_PORT=8000
       - LETSENCRYPT_HOST=auth.rideonline.jadjer.by
@@ -75,7 +72,7 @@ services:
     volumes:
       - keys_data:/app/keys:ro
     environment:
-      - DATABASE_HOST=rideonine_neo4j
+      - DATABASE_HOST=neo4j
       - DATABASE_PORT=7687
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
@@ -97,7 +94,7 @@ services:
     volumes:
       - keys_data:/app/keys:ro
     environment:
-      - DATABASE_HOST=rideonine_neo4j
+      - DATABASE_HOST=neo4j
       - DATABASE_PORT=7687
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASS=${DATABASE_PASS}
