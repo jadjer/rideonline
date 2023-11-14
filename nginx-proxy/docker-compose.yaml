@@ -13,8 +13,8 @@ services:
     container_name: nginx-proxy
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
@@ -27,7 +27,6 @@ services:
     image: nginxproxy/acme-companion
     container_name: nginx-proxy-acme
     restart: always
-
     volumes_from:
       - nginx-proxy
     volumes:
